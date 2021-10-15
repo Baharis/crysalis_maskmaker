@@ -5,6 +5,33 @@ def to_int(_float):
     return int(round(_float) + 0.1)
 
 
+def split_int(i, floats):
+    """
+    Prepare a list of integers proportional to `floats` which sum up to `i`.
+    :param i: integer to be split, equal to the sum of returned integers.
+    :type i: int
+    :param floats: floats to which individual integers will be proportional to.
+    :type floats: tuple[float]
+    :return: List of integers, each proportional to float on `floats` list.
+    :rtype: tuple[int]
+    """
+
+    def split_int_from_sorted(j, sorted_floats):
+        if sum(sorted_floats) <= 0:
+            return tuple([0 for _ in sorted_floats])
+        elif len(sorted_floats) == 1:
+            return (j,)
+        else:
+            chip = int(round(j * sorted_floats[-1] / sum(sorted_floats)))
+            return (*split_int_from_sorted(j - chip, sorted_floats[:-1]), chip)
+
+    ints = split_int_from_sorted(i, sorted(floats))
+    float_order = sorted(range(len(floats)), key=lambda k: floats[k])
+    float_ord_indexes = sorted(range(len(floats)), key=lambda k: float_order[k])
+    print('>', ints, float_ord_indexes)
+    return (ints[i] for i in float_ord_indexes)
+
+
 class Mask:
     """
     Object managing geometry information about detector-accessible area.
@@ -93,7 +120,7 @@ class Mask:
 
     @property
     def ne_len(self):
-        return self.ne_end - self.ne_start
+        return max(self.ne_end - self.ne_start, 0)
 
     @property
     def se_start(self):
@@ -107,7 +134,7 @@ class Mask:
 
     @property
     def se_len(self):
-        return self.se_end - self.se_start
+        return max(self.se_end - self.se_start, 0)
 
     @property
     def sw_start(self):
@@ -121,7 +148,7 @@ class Mask:
 
     @property
     def sw_len(self):
-        return self.sw_end - self.sw_start
+        return max(self.sw_end - self.sw_start, 0)
 
     @property
     def nw_start(self):
@@ -135,7 +162,7 @@ class Mask:
 
     @property
     def nw_len(self):
-        return self.nw_end - self.nw_start
+        return max(self.nw_end - self.nw_start, 0)
 
     @property
     def edge_len(self):
@@ -187,10 +214,8 @@ class Mask:
         rects += [self.west_rect] * (1 - self.clips_west)
 
         resolution -= len(rects)
-        res_ne = int(self.ne_len / self.edge_len * resolution)
-        res_se = int(self.se_len / self.edge_len * resolution)
-        res_sw = int(self.sw_len / self.edge_len * resolution)
-        res_nw = int(self.nw_len / self.edge_len * resolution)
+        edge_lengths = self.ne_len, self.se_len, self.sw_len, self.nw_len
+        res_ne, res_se, res_sw, res_nw = split_int(resolution, edge_lengths)
         if self.ne_len > 0:
             for phi in np.linspace(self.ne_start, self.ne_end, res_ne+2)[1:-1]:
                 rects.append(self.ne_rect_at(phi))
