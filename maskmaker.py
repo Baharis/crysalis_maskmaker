@@ -28,7 +28,6 @@ def split_int(i, floats):
     ints = split_int_from_sorted(i, sorted(floats))
     float_order = sorted(range(len(floats)), key=lambda k: floats[k])
     float_ord_indexes = sorted(range(len(floats)), key=lambda k: float_order[k])
-    print('>', ints, float_ord_indexes)
     return (ints[i] for i in float_ord_indexes)
 
 
@@ -36,14 +35,14 @@ class Mask:
     """
     Object managing geometry information about detector-accessible area.
     """
-    def __init__(self, frame_width, frame_height, radius, radius_y=0,
+    def __init__(self, frame_width, frame_height, radius=-1, radius_y=-1,
                  offset_x=0, offset_y=0):
         """
         :param frame_width: Width of collected frame in pixels.
         :type frame_width: int
         :param frame_height: Height of collected frame in pixels.
         :type frame_height: int
-        :param radius: Horizontal radius of detector-accessible area on frame.
+        :param radius: Radius of detector-accessible area, default: half frame.
         :type radius: int
         :param radius_y: Vertical radius of accessible area, if unequal radius.
         :type radius_y: int
@@ -54,8 +53,8 @@ class Mask:
         """
         self.x_lim = frame_width
         self.y_lim = frame_height
-        self.r_x = radius
-        self.r_y = radius if radius_y is 0 else radius_y
+        self.r_x = min((self.x_lim, self.y_lim))//2 if radius is -1 else radius
+        self.r_y = self.r_x if radius_y is -1 else radius_y
         self.x_center = self.x_lim / 2 + offset_x
         self.y_center = self.y_lim / 2 + offset_y
 
@@ -234,5 +233,5 @@ class Mask:
 
 
 if __name__ == '__main__':
-    m = Mask(2048, 2048, 1000)
+    m = Mask(2000, 2000)
     m.export(resolution=100)
