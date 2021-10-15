@@ -1,10 +1,6 @@
 import numpy as np
 
 
-def to_int(_float):
-    return int(round(_float) + 0.1)
-
-
 def split_int(i, floats):
     """
     Prepare a list of integers proportional to `floats` which sum up to `i`.
@@ -92,21 +88,21 @@ class Mask:
 
     @property
     def north_rect(self):
-        return 0, to_int(self.y_lim-self.north_gap), \
-               to_int(self.x_lim), to_int(self.north_gap)
+        return 0, int(round(self.y_lim - self.north_gap)), \
+               int(round(self.x_lim)), int(round(self.north_gap))
 
     @property
     def east_rect(self):
-        return to_int(self.x_lim-self.east_gap), 0, \
-               to_int(self.east_gap), to_int(self.y_lim)
+        return int(round(self.x_lim - self.east_gap)), 0, \
+               int(round(self.east_gap)), int(round(self.y_lim))
 
     @property
     def south_rect(self):
-        return 0, 0, to_int(self.x_lim), to_int(self.south_gap)
+        return 0, 0, int(round(self.x_lim)), int(round(self.south_gap))
 
     @property
     def west_rect(self):
-        return 0, 0, to_int(self.west_gap), to_int(self.y_lim)
+        return 0, 0, int(round(self.west_gap)), int(round(self.y_lim))
 
     @property
     def ne_start(self):
@@ -174,25 +170,25 @@ class Mask:
         return self.y_center + self.r_y * np.cos(phi)
 
     def ne_rect_at(self, phi):
-        return to_int(self.edge_x_at(phi)), \
-               to_int(self.edge_y_at(phi)), \
-               to_int(self.x_lim-self.edge_x_at(phi)), \
-               to_int(self.y_lim-self.edge_y_at(phi))
+        return int(round(self.edge_x_at(phi))), \
+               int(round(self.edge_y_at(phi))), \
+               int(round(self.x_lim - self.edge_x_at(phi))), \
+               int(round(self.y_lim - self.edge_y_at(phi)))
 
     def se_rect_at(self, phi):
-        return to_int(self.edge_x_at(phi)), 0, \
-               to_int(self.x_lim-self.edge_x_at(phi)), \
-               to_int(self.edge_y_at(phi))
+        return int(round(self.edge_x_at(phi))), 0, \
+               int(round(self.x_lim - self.edge_x_at(phi))), \
+               int(round(self.edge_y_at(phi)))
 
     def sw_rect_at(self, phi):
         return 0, 0, \
-               to_int(self.edge_x_at(phi)), \
-               to_int(self.edge_y_at(phi))
+               int(round(self.edge_x_at(phi))), \
+               int(round(self.edge_y_at(phi)))
 
     def nw_rect_at(self, phi):
-        return 0, to_int(self.edge_y_at(phi)), \
-               to_int(self.edge_x_at(phi)), \
-               to_int(self.y_lim-self.edge_y_at(phi))
+        return 0, int(round(self.edge_y_at(phi))), \
+               int(round(self.edge_x_at(phi))), \
+               int(round(self.y_lim - self.edge_y_at(phi)))
 
     def export(self, path='edge_mask.mac', resolution=100):
         """
