@@ -207,10 +207,10 @@ class Mask:
         :type resolution: int
         """
         rects = list()
-        rects += [self.north_rect] * (1 - self.clips_north)
-        rects += [self.east_rect] * (1 - self.clips_east)
-        rects += [self.south_rect] * (1 - self.clips_south)
-        rects += [self.west_rect] * (1 - self.clips_west)
+        rects += [self.north_rect] if self.north_gap >= 0.5 else []
+        rects += [self.east_rect] if self.east_gap >= 0.5 else []
+        rects += [self.south_rect] if self.south_gap >= 0.5 else []
+        rects += [self.west_rect] if self.west_gap >= 0.5 else []
 
         resolution -= len(rects)
         edge_lengths = self.ne_len, self.se_len, self.sw_len, self.nw_len
