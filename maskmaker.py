@@ -13,7 +13,7 @@ def split_int(i, floats):
     """
 
     def split_int_from_sorted(j, sorted_floats):
-        if sum(sorted_floats) <= 0:
+        if all(sorted_floats <= 0):
             return tuple([0 for _ in sorted_floats])
         elif len(sorted_floats) == 1:
             return (j,)
@@ -211,16 +211,16 @@ class Mask:
         resolution -= len(rects)
         edge_lengths = self.ne_len, self.se_len, self.sw_len, self.nw_len
         res_ne, res_se, res_sw, res_nw = split_int(resolution, edge_lengths)
-        if self.ne_len > 0:
+        if res_ne > 0:
             for phi in np.linspace(self.ne_start, self.ne_end, res_ne+2)[1:-1]:
                 rects.append(self.ne_rect_at(phi))
-        if self.se_len > 0:
+        if res_se > 0:
             for phi in np.linspace(self.se_start, self.se_end, res_se+2)[1:-1]:
                 rects.append(self.se_rect_at(phi))
-        if self.sw_len > 0:
+        if res_sw > 0:
             for phi in np.linspace(self.sw_start, self.sw_end, res_sw+2)[1:-1]:
                 rects.append(self.sw_rect_at(phi))
-        if self.nw_len > 0:
+        if res_nw > 0:
             for phi in np.linspace(self.nw_start, self.nw_end, res_nw+2)[1:-1]:
                 rects.append(self.nw_rect_at(phi))
         with open(path, 'w') as file:
