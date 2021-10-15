@@ -13,7 +13,7 @@ def split_int(i, floats):
     """
 
     def split_int_from_sorted(j, sorted_floats):
-        if all(sorted_floats <= 0):
+        if all([f <= 0 for f in sorted_floats]):
             return tuple([0 for _ in sorted_floats])
         elif len(sorted_floats) == 1:
             return (j,)
@@ -229,5 +229,5 @@ class Mask:
 
 
 if __name__ == '__main__':
-    m = Mask(2000, 2000)
+    m = Mask(2048, 2048)
     m.export(resolution=100)
